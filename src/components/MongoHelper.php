@@ -55,7 +55,7 @@ class MongoHelper extends Injectable
         }
 
         $result = $this->mongo->store->products->find(['name' => ['$regex' => $filter]], [
-            "skip" => ((int) $page) - 1,
+            "skip" => (int)$page == 1 ? 1 : ((int) $page) - 1,
             "limit" => (int) $per_page,
             "projection" => $columns
         ]);
