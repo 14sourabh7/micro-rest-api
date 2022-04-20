@@ -111,6 +111,23 @@ switch ($collection) {
 }
 
 
+$app->before(
+    function () use ($app) {
+        $key = $app->request->get('key');
+        $middlewareHelper = new \App\Db\MiddlewareHelper();
+        if ($key) {
+            if ($middlewareHelper->checkKey($key)) {
+                return true;
+            } else {
+                $middlewareHelper->sendErrorResponse();
+            }
+        } else {
+            $middlewareHelper->keyNotFound();
+        }
+    }
+);
+
+
 $app->handle(
     $_SERVER["REQUEST_URI"]
 );

@@ -16,7 +16,7 @@ class MongoHelper extends Injectable
      * @param [type] $keyword
      * @return json
      */
-    public function search($key, $keyword)
+    public function search($keyword)
     {
         $keywords = [];
 
@@ -33,7 +33,7 @@ class MongoHelper extends Injectable
 
         $result =  $this->mongo->store->products->find(['$or' => $keywords]);
 
-        return $this->getJsonEncode($result);
+        return $this->setResponse($result);
     }
 
 
@@ -45,10 +45,10 @@ class MongoHelper extends Injectable
      * @param [type] $key
      * @return json
      */
-    public function getAll($key)
+    public function getAll()
     {
         $result = $this->mongo->store->products->find();
-        return $this->getJsonEncode($result);
+        return $this->setResponse($result);
     }
 
     /**
@@ -63,7 +63,7 @@ class MongoHelper extends Injectable
      * @param [type] $filter
      * @return json
      */
-    public function get($key, $per_page, $page, $select, $filter)
+    public function get($per_page, $page, $select, $filter)
     {
 
         $columns = ["_id" => 0];
@@ -72,13 +72,30 @@ class MongoHelper extends Injectable
             $columns[$value] = 1;
         }
 
-        $result = $this->mongo->store->products->find(['name' => ['$regex' => $filter]], [
-            "skip" => (int)$page == 1 ? 0 : ((int) $page) - 1,
-            "limit" => (int) $per_page,
-            "projection" => $columns
-        ]);
 
-        return $this->getJsonEncode($result);
+        $count =  $this->mongo->store->products->find(['name' => ['$regex' => $filter]]);
+        $count = count(iterator_to_array($count));
+        $pages = $count / $per_page;
+        if ($pages < $page) {
+            return (["info" => "page limit exceeded available data:$count"]);
+        } else if ($page == 0) {
+            return (["info" => "page number starts from 1"]);
+        } else {
+            $result = $this->mongo->store->products->find(['name' => ['$regex' => $filter]], [
+                "skip" => (int)$page == 1 ? 0 : ((int) $page) - 1,
+                "limit" => (int) $per_page,
+                "projection" => $columns
+            ]);
+            $result =  $this->setResponse($result);
+            if ($page == $pages) {
+                $result['next_page'] = false;
+            } else {
+                $result['next_page'] = true;
+            }
+            return $result;
+        }
+        // die;
+
     }
 
 
@@ -86,14 +103,14 @@ class MongoHelper extends Injectable
 
 
     /**
-     * getJsonEncode($result)
+     * setResponse($result)
      * 
      * function preparing json response
      *
      * @param [type] $result
      * @return json
      */
-    public function getJsonEncode($result)
+    public function setResponse($result)
     {
         $response = [];
 
@@ -113,6 +130,10 @@ class MongoHelper extends Injectable
                     $response[$k]['variation'][$key] = iterator_to_array($value);
                 }
             }
+        }
+
+        if (count($response) < 1) {
+            $response = array("info" => "no data found for the given conditions");
         }
         return $response;
     }

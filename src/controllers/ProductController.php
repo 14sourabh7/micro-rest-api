@@ -1,11 +1,7 @@
 <?php
 
-
-
 use Phalcon\Mvc\Controller;
 use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
-
 
 class ProductController extends Controller
 {
@@ -52,21 +48,12 @@ class ProductController extends Controller
      */
     public function search($keyword)
     {
-        $key = $this->request->get('key');
 
-        if ($key) {
-            if (!$this->checkKey($key)) {
-                return $this->sendErrorResponse();
-            }
+        $keyword = explode(" ", urldecode($keyword));
+        $products = $this->db->search($keyword);
 
-            $keyword = explode(" ", urldecode($keyword));
-            $products = $this->db->search($key, $keyword);
-
-            $response = $this->response->setJsonContent($products);
-            return $response;
-        } else {
-            return $this->keyNotFound();
-        }
+        $response = $this->response->setJsonContent($products);
+        return $response;
     }
 
     /**
@@ -78,19 +65,11 @@ class ProductController extends Controller
      */
     public function getAll()
     {
-        $key = $this->request->get('key');
-        if ($key) {
-            if (!$this->checkKey($key)) {
-                return $this->sendErrorResponse();
-            }
 
-            $products = $this->db->getAll($key);
+        $products = $this->db->getAll();
 
-            $response = $this->response->setJsonContent($products);
-            return $response;
-        } else {
-            return $this->keyNotFound();
-        }
+        $response = $this->response->setJsonContent($products);
+        return $response;
     }
 
 
@@ -107,18 +86,11 @@ class ProductController extends Controller
      */
     public function get($per_page = 10, $page = 1, $select = "", $filter = "")
     {
-        $key = $this->request->get('key');
-        if ($key) {
-            if (!$this->checkKey($key)) {
-                return $this->sendErrorResponse();
-            }
-            $products = $this->db->get($key, $per_page, $page, $select, $filter);
 
-            $response = $this->response->setJsonContent($products);
-            return $response;
-        } else {
-            return $this->keyNotFound();
-        }
+        $products = $this->db->get($per_page, $page, $select, $filter);
+
+        $response = $this->response->setJsonContent($products);
+        return $response;
     }
 
     /**
@@ -132,68 +104,6 @@ class ProductController extends Controller
     {
         $response = $this->response->setStatusCode(404);
         $response->setJsonContent(["error" => "Page not found"]);
-        return $response;
-    }
-
-
-    /**
-     * checkKey($key)
-     * 
-     * function to check key
-     *
-     * @param [type] $key
-     * @return bool
-     */
-    public function checkKey($key)
-    {
-        try {
-            $publicKey = $this->config->get('api')->get('publickey');
-            $decoded = JWT::decode($key, new Key($publicKey, 'EdDSA'));
-            $credentials = (array) $decoded;
-
-
-            $aclFile = './acl.cache';
-            $acl = unserialize(file_get_contents($aclFile));
-
-            $application = new \Phalcon\Mvc\Application();
-            $controller
-                = $application->router->getControllerName();
-            $action
-                = $application->router->getActionName() ? $application->router->getActionName() : 'index';
-            $bearer = $credentials['bearer'];
-
-
-            if (true !== $acl->isAllowed($bearer, $controller, $action)) {
-                return false;
-            }
-            return true;
-        } catch (\Exception $e) {
-            return false;
-        }
-    }
-
-
-    /**
-     * function to send invalid key response
-     *
-     * @return void
-     */
-    public function sendErrorResponse()
-    {
-        $response = $this->response->setStatusCode(401);
-        $this->response->setJsonContent(array('error' => "invalid key or access not granted"));
-        return $response;
-    }
-
-    /**
-     * function to send key missing response
-     *
-     * @return void
-     */
-    public function keyNotFound()
-    {
-        $response = $this->response->setStatusCode(404);
-        $this->response->setJsonContent(array('error' => "key missing"));
         return $response;
     }
 }
