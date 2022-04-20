@@ -7,9 +7,12 @@ use Phalcon\Mvc\Micro\Collection as MicroCollection;
 use Phalcon\Session\Manager;
 use Phalcon\Session\Adapter\Stream;
 use Phalcon\Http\Response;
+use Phalcon\Config\ConfigFactory;
 
 $container = new FactoryDefault();
+
 $app = new Micro();
+
 define('BASE_PATH', dirname(__DIR__));
 require './vendor/autoload.php';
 
@@ -38,6 +41,7 @@ $files = new Stream(
     ]
 );
 $session->setAdapter($files);
+
 $container->set('session', $session);
 
 $container->set('db', function () {
@@ -48,9 +52,20 @@ $container->set('response', function () {
     return new Response();
 });
 
+$filename = './config/config.php';
+$factory = new ConfigFactory();
+$config =  $factory->newInstance('php', $filename);
+$container->set(
+    'config',
+    $config,
+    true
+);
+
+
 $container->set('mongo', function () {
+    global $config;
     return
-        new \MongoDB\Client("mongodb+srv://m001-student:12345@sandbox.h1mpq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority");
+        new \MongoDB\Client("mongodb+srv://" . $config->get('db')->get("username") . ":" . $config->get('db')->get("password") . "@sandbox.h1mpq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority");
 });
 
 

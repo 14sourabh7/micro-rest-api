@@ -5,9 +5,7 @@
 use Phalcon\Mvc\Controller;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use Phalcon\Acl\Adapter\Memory;
-use Phalcon\Acl\Role;
-use Phalcon\Acl\Component;
+
 
 class ProductController extends Controller
 {
@@ -24,14 +22,19 @@ class ProductController extends Controller
         $pass = $this->request->get('password');
 
         if ($user && $pass) {
-            $privateKey = "xP+ZnsWx0SNevsk6fj4+eSZ6RaOIIn5vZK/3avpMT9+DsIwgXMOTvahbYq9JCdEdHr+/t9fkKyvMzrkwQiykIw==";
+
+            $privateKey = $this->config->get('api')->get('privatekey');
+
             $payload = array(
                 "bearer" => "admin"
             );
+
             $jwt = JWT::encode($payload, $privateKey, 'EdDSA');
+
             $response = $this->response->setJsonContent(["key" => $jwt]);
             return $response;
         } else {
+
             $response = $this->response->setStatusCode(401);
             $this->response->setJsonContent(array('error' => "invalid credentials"));
             return $response;
@@ -50,12 +53,15 @@ class ProductController extends Controller
     public function search($keyword)
     {
         $key = $this->request->get('key');
+
         if ($key) {
             if (!$this->checkKey($key)) {
                 return $this->sendErrorResponse();
             }
+
             $keyword = explode(" ", urldecode($keyword));
             $products = $this->db->search($key, $keyword);
+
             $response = $this->response->setJsonContent($products);
             return $response;
         } else {
@@ -77,7 +83,9 @@ class ProductController extends Controller
             if (!$this->checkKey($key)) {
                 return $this->sendErrorResponse();
             }
+
             $products = $this->db->getAll($key);
+
             $response = $this->response->setJsonContent($products);
             return $response;
         } else {
@@ -105,6 +113,7 @@ class ProductController extends Controller
                 return $this->sendErrorResponse();
             }
             $products = $this->db->get($key, $per_page, $page, $select, $filter);
+
             $response = $this->response->setJsonContent($products);
             return $response;
         } else {
@@ -138,7 +147,7 @@ class ProductController extends Controller
     public function checkKey($key)
     {
         try {
-            $publicKey = "g7CMIFzDk72oW2KvSQnRHR6/v7fX5CsrzM65MEIspCM=";
+            $publicKey = $this->config->get('api')->get('publickey');
             $decoded = JWT::decode($key, new Key($publicKey, 'EdDSA'));
             $credentials = (array) $decoded;
 
