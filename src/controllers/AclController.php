@@ -2,8 +2,6 @@
 
 use Phalcon\MVC\Controller;
 use Phalcon\Acl\Adapter\Memory;
-use Phalcon\Acl\Role;
-use Phalcon\Acl\Component;
 
 class AclController extends Controller
 {
