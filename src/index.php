@@ -10,7 +10,7 @@ use Phalcon\Http\Response;
 
 $container = new FactoryDefault();
 $app = new Micro();
-
+define('BASE_PATH', dirname(__DIR__));
 require './vendor/autoload.php';
 
 //loader to register controller dir
@@ -74,6 +74,17 @@ switch ($collection) {
 
         $app->mount($product);
         break;
+    case 'acl':
+        $acl = new MicroCollection();
+        $acl->setHandler(
+            AclController::class,
+            true
+        )->setPrefix('/acl')
+            ->get('/', 'index');
+
+        $app->mount($acl);
+        break;
+
     default:
         $notFoundHandler = new MicroCollection();
         $notFoundHandler->setHandler(

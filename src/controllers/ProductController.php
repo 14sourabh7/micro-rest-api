@@ -5,7 +5,9 @@
 use Phalcon\Mvc\Controller;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-
+use Phalcon\Acl\Adapter\Memory;
+use Phalcon\Acl\Role;
+use Phalcon\Acl\Component;
 
 class ProductController extends Controller
 {
@@ -24,8 +26,7 @@ class ProductController extends Controller
         if ($user && $pass) {
             $privateKey = "xP+ZnsWx0SNevsk6fj4+eSZ6RaOIIn5vZK/3avpMT9+DsIwgXMOTvahbYq9JCdEdHr+/t9fkKyvMzrkwQiykIw==";
             $payload = array(
-                "user" => $user,
-                "password" => $pass
+                "bearer" => "admin"
             );
             $jwt = JWT::encode($payload, $privateKey, 'EdDSA');
             $response = $this->response->setJsonContent(["key" => $jwt]);
@@ -140,13 +141,23 @@ class ProductController extends Controller
             $publicKey = "g7CMIFzDk72oW2KvSQnRHR6/v7fX5CsrzM65MEIspCM=";
             $decoded = JWT::decode($key, new Key($publicKey, 'EdDSA'));
             $credentials = (array) $decoded;
-            $user = $credentials['user'];
-            $password = $credentials['password'];
-            if ($user = 'sourabh' && $password == '12345') {
-                return true;
-            } else {
+
+
+            $aclFile = './acl.cache';
+            $acl = unserialize(file_get_contents($aclFile));
+
+            $application = new \Phalcon\Mvc\Application();
+            $controller
+                = $application->router->getControllerName();
+            $action
+                = $application->router->getActionName() ? $application->router->getActionName() : 'index';
+            $bearer = $credentials['bearer'];
+
+
+            if (true !== $acl->isAllowed($bearer, $controller, $action)) {
                 return false;
             }
+            return true;
         } catch (\Exception $e) {
             return false;
         }
@@ -161,7 +172,7 @@ class ProductController extends Controller
     public function sendErrorResponse()
     {
         $response = $this->response->setStatusCode(401);
-        $this->response->setJsonContent(array('error' => "invalid key"));
+        $this->response->setJsonContent(array('error' => "invalid key or access not granted"));
         return $response;
     }
 
