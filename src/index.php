@@ -6,6 +6,7 @@ use Phalcon\Di\FactoryDefault;
 use Phalcon\Mvc\Micro\Collection as MicroCollection;
 use Phalcon\Session\Manager;
 use Phalcon\Session\Adapter\Stream;
+use Phalcon\Http\Response;
 
 $container = new FactoryDefault();
 $app = new Micro();
@@ -43,6 +44,10 @@ $container->set('db', function () {
     return new App\Db\MongoHelper();
 });
 
+$container->set('response', function () {
+    return new Response();
+});
+
 $container->set('mongo', function () {
     return
         new \MongoDB\Client("mongodb+srv://m001-student:12345@sandbox.h1mpq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority");
@@ -63,11 +68,20 @@ switch ($collection) {
             true
         )->setPrefix('/product')
             ->get('/', 'index')
-            ->get('/search/{key}/{keyword}', 'search')
-            ->get('/get/{key}/{per_page}/{page}/{select}/{filters}', 'get');
+            ->get('/search/{keyword}', 'search')
+            ->get('/get', 'getAll')
+            ->get('/get/{per_page}/{page}/{select}/{filters}', 'get');
 
         $app->mount($product);
         break;
+    default:
+        $notFoundHandler = new MicroCollection();
+        $notFoundHandler->setHandler(
+            ProductController::class,
+            true
+        )->setPrefix($_SERVER["REQUEST_URI"])
+            ->get('/', 'notfound');
+        $app->mount($notFoundHandler);
 }
 
 
