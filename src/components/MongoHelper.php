@@ -22,7 +22,15 @@ class MongoHelper extends Injectable
 
         foreach ($keyword as $key => $value) {
             array_push($keywords, array('name' => ['$regex' => $value]));
+            array_push($keywords, array('variations' => [
+                '$elemMatch' => [
+                    "name" => [
+                        '$regex' => $value
+                    ]
+                ]
+            ]));
         }
+
         $result =  $this->mongo->store->products->find(['$or' => $keywords]);
 
         return $this->getJsonEncode($result);
