@@ -3,8 +3,6 @@
 namespace App\Db;
 
 use Phalcon\Di\Injectable;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 
 class MongoHelper extends Injectable
 {
@@ -21,13 +19,7 @@ class MongoHelper extends Injectable
     public function search($key, $keyword)
     {
         $keywords = [];
-        $auth = $this->checkKey($key);
-        if (!$this->checkKey($key)) {
-            $response = $this->response->SetStatusCode(401);
-            $response =  $this->response->setJsonContent(["status" => "error", "message" => "Invalid token"]);
-            return $response;
-            die;
-        }
+
         foreach ($keyword as $key => $value) {
             array_push($keywords, array('name' => ['$regex' => $value]));
         }
@@ -47,10 +39,6 @@ class MongoHelper extends Injectable
      */
     public function getAll($key)
     {
-        if (!$this->checkKey($key)) {
-            return json_encode(array("error" => "Invalid token"));
-            die;
-        }
         $result = $this->mongo->store->products->find();
         return $this->getJsonEncode($result);
     }
@@ -69,10 +57,7 @@ class MongoHelper extends Injectable
      */
     public function get($key, $per_page, $page, $select, $filter)
     {
-        if (!$this->checkKey($key)) {
-            return json_encode(array("error" => "Invalid token"));
-            die;
-        }
+
         $columns = ["_id" => 0];
 
         foreach (explode(" ", urldecode($select)) as $column => $value) {
@@ -89,31 +74,7 @@ class MongoHelper extends Injectable
     }
 
 
-    /**
-     * checkKey($key)
-     * 
-     * function to check key
-     *
-     * @param [type] $key
-     * @return bool
-     */
-    public function checkKey($key)
-    {
-        try {
-            $publicKey = "g7CMIFzDk72oW2KvSQnRHR6/v7fX5CsrzM65MEIspCM=";
-            $decoded = JWT::decode($key, new Key($publicKey, 'EdDSA'));
-            $credentials = (array) $decoded;
-            $user = $credentials['user'];
-            $password = $credentials['password'];
-            if ($user = 'sourabh' && $password == '12345') {
-                return true;
-            } else {
-                die('hello');
-            }
-        } catch (\Exception $e) {
-            return false;
-        }
-    }
+
 
 
     /**

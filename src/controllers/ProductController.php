@@ -49,10 +49,17 @@ class ProductController extends Controller
     public function search($keyword)
     {
         $key = $this->request->get('key');
-        $keyword = explode(" ", urldecode($keyword));
-        $products = $this->db->search($key, $keyword);
-        $response = $this->response->setJsonContent($products);
-        return $response;
+        if ($key) {
+            if (!$this->checkKey($key)) {
+                return $this->sendErrorResponse();
+            }
+            $keyword = explode(" ", urldecode($keyword));
+            $products = $this->db->search($key, $keyword);
+            $response = $this->response->setJsonContent($products);
+            return $response;
+        } else {
+            return $this->keyNotFound();
+        }
     }
 
     /**
@@ -65,9 +72,16 @@ class ProductController extends Controller
     public function getAll()
     {
         $key = $this->request->get('key');
-        $products = $this->db->getAll($key);
-        $response = $this->response->setJsonContent($products);
-        return $response;
+        if ($key) {
+            if (!$this->checkKey($key)) {
+                return $this->sendErrorResponse();
+            }
+            $products = $this->db->getAll($key);
+            $response = $this->response->setJsonContent($products);
+            return $response;
+        } else {
+            return $this->keyNotFound();
+        }
     }
 
 
@@ -85,9 +99,16 @@ class ProductController extends Controller
     public function get($per_page = 10, $page = 1, $select = "", $filter = "")
     {
         $key = $this->request->get('key');
-        $products = $this->db->get($key, $per_page, $page, $select, $filter);
-        $response = $this->response->setJsonContent($products);
-        return $response;
+        if ($key) {
+            if (!$this->checkKey($key)) {
+                return $this->sendErrorResponse();
+            }
+            $products = $this->db->get($key, $per_page, $page, $select, $filter);
+            $response = $this->response->setJsonContent($products);
+            return $response;
+        } else {
+            return $this->keyNotFound();
+        }
     }
 
     /**
@@ -101,6 +122,58 @@ class ProductController extends Controller
     {
         $response = $this->response->setStatusCode(404);
         $response->setJsonContent(["error" => "Page not found"]);
+        return $response;
+    }
+
+
+    /**
+     * checkKey($key)
+     * 
+     * function to check key
+     *
+     * @param [type] $key
+     * @return bool
+     */
+    public function checkKey($key)
+    {
+        try {
+            $publicKey = "g7CMIFzDk72oW2KvSQnRHR6/v7fX5CsrzM65MEIspCM=";
+            $decoded = JWT::decode($key, new Key($publicKey, 'EdDSA'));
+            $credentials = (array) $decoded;
+            $user = $credentials['user'];
+            $password = $credentials['password'];
+            if ($user = 'sourabh' && $password == '12345') {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+
+    /**
+     * function to send invalid key response
+     *
+     * @return void
+     */
+    public function sendErrorResponse()
+    {
+        $response = $this->response->setStatusCode(401);
+        $this->response->setJsonContent(array('error' => "invalid key"));
+        return $response;
+    }
+
+    /**
+     * function to send key missing response
+     *
+     * @return void
+     */
+    public function keyNotFound()
+    {
+        $response = $this->response->setStatusCode(404);
+        $this->response->setJsonContent(array('error' => "key missing"));
         return $response;
     }
 }
