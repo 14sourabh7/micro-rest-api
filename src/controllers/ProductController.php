@@ -20,7 +20,7 @@ class ProductController extends Controller
 
         $keyword = explode(" ", urldecode($keyword));
         $products = $this->db->search($keyword);
-
+        $this->response->setStatusCode(200);
         $response = $this->response->setJsonContent($products);
         return $response;
     }
@@ -36,7 +36,7 @@ class ProductController extends Controller
     {
 
         $products = $this->db->getAll();
-
+        $this->response->setStatusCode(200);
         $response = $this->response->setJsonContent($products);
         return $response;
     }
@@ -57,7 +57,7 @@ class ProductController extends Controller
     {
 
         $products = $this->db->get($per_page, $page, $select, $filter);
-
+        $this->response->setStatusCode(200);
         $response = $this->response->setJsonContent($products);
         return $response;
     }

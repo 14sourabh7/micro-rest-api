@@ -144,7 +144,11 @@ $app->before(
     }
 );
 
-
+$app->notFound(function () use ($app) {
+    $app->response->setStatusCode(404);
+    $app->response->setJsonContent(["error" => "error 404 Page not found"]);
+    $app->response->send();
+});
 $app->handle(
     $_SERVER["REQUEST_URI"]
 );

@@ -63,14 +63,16 @@ class UserController extends Controller
                 );
 
                 $jwt = JWT::encode($payload, $privateKey, 'EdDSA');
-
+                $this->response->setStatusCode(200);
                 $response = $this->response->setJsonContent(["key" => $jwt]);
                 return $response;
             } else {
+                $this->response->setStatusCode(401);
                 $response = $this->response->setJsonContent(["error" => "invalid token"]);
                 return $response;
             }
         } else {
+            $this->response->setStatusCode(401);
             $response = $this->response->setJsonContent(["error" => "token not provided"]);
             return $response;
         }
