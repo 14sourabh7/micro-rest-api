@@ -76,6 +76,17 @@ $parts = explode("/", $path);
 $collection = $parts[1];
 
 switch ($collection) {
+    case 'user':
+        $user = new MicroCollection();
+        $user->setHandler(
+            UserController::class,
+            true
+        )->setPrefix('/user')
+            ->get('/', 'index')
+            ->get('/accesstoken', 'userAccesToken');
+
+        $app->mount($user);
+        break;
     case 'product':
         $product = new MicroCollection();
         $product->setHandler(
@@ -113,16 +124,22 @@ switch ($collection) {
 
 $app->before(
     function () use ($app) {
-        $key = $app->request->get('key');
-        $middlewareHelper = new \App\Db\MiddlewareHelper();
-        if ($key) {
-            if ($middlewareHelper->checkKey($key)) {
-                return true;
-            } else {
-                $middlewareHelper->sendErrorResponse();
-            }
+
+        $controller = explode('/', $_SERVER["REQUEST_URI"])[1];
+        if ((strpos($controller, 'user?')) == 0 || $controller == 'acl') {
+            return true;
         } else {
-            $middlewareHelper->keyNotFound();
+            $key = $app->request->get('key');
+            $middlewareHelper = new \App\Db\MiddlewareHelper();
+            if ($key) {
+                if ($middlewareHelper->checkKey($key)) {
+                    return true;
+                } else {
+                    $middlewareHelper->sendErrorResponse();
+                }
+            } else {
+                $middlewareHelper->keyNotFound();
+            }
         }
     }
 );

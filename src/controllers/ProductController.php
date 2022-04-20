@@ -8,37 +8,6 @@ class ProductController extends Controller
 
 
     /**
-     * function returning jwt token
-     *
-     * @return void
-     */
-    public function index()
-    {
-        $user = $this->request->get('user');
-        $pass = $this->request->get('password');
-
-        if ($user && $pass) {
-
-            $privateKey = $this->config->get('api')->get('privatekey');
-
-            $payload = array(
-                "bearer" => "admin"
-            );
-
-            $jwt = JWT::encode($payload, $privateKey, 'EdDSA');
-
-            $response = $this->response->setJsonContent(["key" => $jwt]);
-            return $response;
-        } else {
-
-            $response = $this->response->setStatusCode(401);
-            $this->response->setJsonContent(array('error' => "invalid credentials"));
-            return $response;
-        }
-    }
-
-
-    /**
      * search($keyword)
      *
      * controller function to send search response

@@ -7,6 +7,24 @@ use Phalcon\Di\Injectable;
 class MongoHelper extends Injectable
 {
 
+
+    public function checkUser($user, $password)
+    {
+        $result = $this->mongo->store->user->find(["username" => $user, "password" => $password]);
+        foreach ($result as $user => $details) {
+            return true;
+        }
+    }
+
+    public function getRole($user, $password)
+    {
+        $result = $this->mongo->store->user->find(["username" => $user, "password" => $password]);
+        foreach ($result as $user => $details) {
+            return $details->role;
+        }
+    }
+
+
     /**
      * search($key, $keyword)
      * 

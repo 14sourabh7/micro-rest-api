@@ -15,6 +15,7 @@ class AclController extends Controller
         $acl->allow('admin', '*', '*');
         $acl->allow('user', 'product', '*');
         file_put_contents($aclFile, serialize($acl));
-        return 'permissions granted';
+        $this->response->setJsonContent(["status" => "permission granted"]);
+        return $this->response;
     }
 }
