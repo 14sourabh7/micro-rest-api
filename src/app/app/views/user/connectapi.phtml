@@ -1,0 +1,26 @@
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Connect Api</h5>
+        <p class="card-text">Approve the connection request by clicking button below and get authorisation token</p>
+        <form action="" method="post">
+            <input type="submit" name='authorise' value="approve" class="btn btn-primary">
+        </form>
+
+    </div>
+</div>
+
+<?php if ($auth) { ?>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Connect Api</h5>
+            <p class="card-text">You are auhtorised</p>
+            <form action="" method="post">
+                <input type="hidden" name="token" value="<?php echo $token ?>">
+                <input type="submit" name='access' value="connect" class="btn btn-primary">
+            </form>
+
+        </div>
+    </div>
+
+<?php } ?>

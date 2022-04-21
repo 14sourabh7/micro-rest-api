@@ -1,0 +1,114 @@
+<div class="row shadow-md bg-dark">
+    <a href="/" class='btn  btn-primary float-right col'>products</a>
+    <a href="/index/addproduct" class='btn btn-success ms-3 float-right col'>add product</a>
+    <a href="/order" class='btn btn-danger ms-3 float-right col'>orders</a>
+    <a href="/order/addorder" class='btn btn-secondary ms-3 float-right col'>add order</a>
+</div>
+
+
+<h2><?php echo $locale->_('add') . " " . $locale->_('product') ?></h2>
+<div class='row'>
+    <div class="col-7 ">
+        <form action="" method="post">
+            <div id='addForm'>
+                <div class="mb-3">
+                    <label for="name" class="form-label"><?php echo $locale->_('name') ?></label>
+                    <input type="text" class="form-control" name="name" aria-describedby="name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="category" class="form-label"><?php echo $locale->_('category') . " " . $locale->_('name') ?></label>
+                    <input type="text" class="form-control" name='category' required>
+                </div>
+                <div class="mb-3">
+                    <label for="price" class="form-label"><?php echo $locale->_('price') ?></label>
+                    <input type="number" class="form-control" name='price' required>
+                </div>
+                <div class="mb-3">
+                    <label for="stock" class="form-label"><?php echo $locale->_('stock') ?></label>
+                    <input type="number" class="form-control" name='stock' required>
+                </div>
+            </div>
+
+
+            <button type="submit" class="btn btn-primary btn-lg"><?php echo $locale->_('add') . " " . $locale->_('product') ?></button>
+        </form>
+
+    </div>
+
+    <div class="col-1"></div>
+
+    <div class='col-4 shadow-md bg-secondary'>
+
+        <h4><?php echo $locale->_('add') . " " . $locale->_('additional') . " " . $locale->_('details') ?></h4>
+        <div class="row g-3">
+
+            <div class="col-sm-7">
+                <div class="form-outline">
+                    <input type="text" id="addLabel" class="form-control" />
+                    <label class="form-label" for="form10Example1"><?php echo $locale->_('label') ?></label>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="form-outline">
+                    <select name="type" id="addType">
+                        <option value="text" name='type'>text</option>
+                        <option value='number' name='type'>number</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="form-outline">
+                    <input type="button" id="addBtn" class='btn btn-success' value="Add">
+                </div>
+            </div>
+        </div>
+        <!--  -->
+
+        <hr>
+
+        <div class="row g-3 shadow-md bg-secondary">
+            <div class="col-sm-7">
+                <h4><?php echo $locale->_('add') . " " . $locale->_('variations') ?></h4>
+            </div>
+
+
+            <div class="col-sm-7">
+                <div class="form-outline">
+                    <input type="text" id="variationLabel" class="form-control" />
+                    <label class="form-label" for="form10Example1"><?php echo $locale->_('variation') . " " . $locale->_('label') ?></label>
+                </div>
+            </div>
+
+            <div class="col-sm-7">
+                <div class="form-outline">
+                    <input type="number" id="variationPrice" class="form-control" />
+                    <label class="form-label" for="form10Example1"><?php echo $locale->_('variation') . " " . $locale->_('price') ?></label>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class='row'>
+                    <input type="text" id="variationValueName" placeholder="Name" class="form-control col mx-1" />
+                    <input type="text" id="variationValue" placeholder="Value" class="form-control col mx-1" />
+                    <button type="button" id="addField" class='btn btn-success'><?php echo $locale->_('add') . " " . $locale->_('field') ?></button>
+                </div>
+            </div>
+            <div class="col-sm-7 py-3">
+                <div class="form-outline">
+                    <input type="button" id="addVar" class='btn btn-success' value="addVariation">
+                </div>
+            </div>
+
+            <div class="col-sm-7 py-3" id="variationHtml">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="../app/public/js/product.js"></script>
