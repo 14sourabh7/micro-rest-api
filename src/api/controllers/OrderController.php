@@ -57,32 +57,46 @@ class OrderController extends Controller
                 $data['key'] = $this->escaper->sanitize($value);
             }
 
-            if ($data['product_id']) {
-                $status = $this->order->postOrder($data);
-                if ($status) {
-                    $this->response->setStatusCode(201);
-                    return $this->response->setJsonContent(['message' => 'created']);
+            if (isset($data['product_id']) && isset($data['quantity'])) {
+
+                if ($data['quantity'] > 0) {
+                    $status = $this->order->postOrder($data);
+
+                    if ($status) {
+                        return $this->response->setJsonContent($status);
+                    }
+                } else {
+                    $this->response->setStatusCode(404);
+                    return $this->response->setJsonContent(['error' => 'quantity must be greater than 0']);
                 }
             } else {
                 $this->response->setStatusCode(404);
-                return $this->response->setJsonContent(['error' => 'product id required']);
+                return $this->response->setJsonContent(['error' => 'product id and quantity must be provided']);
             }
+        } else {
+            $this->response->setStatusCode(404);
+            return $this->response->setJsonContent(['error' => 'no data provided']);
         }
     }
 
     public function updateOrder()
     {
 
-        if ($this->request->getPut()) {
-            $data = $this->request->getPut();
+        if ($this->request->getPost()) {
+            $data = $this->request->getPost();
+
             foreach ($data as $key => $value) {
                 $data['key'] = $this->escaper->sanitize($value);
             }
-
-            $status = $this->order->putOrder($data);
-            if ($status) {
+            if (isset($data['id']) && isset($data['status'])) {
+                $status = $this->order->putOrder($data);
+                if ($status) {
+                    $this->response->setStatusCode(201);
+                    return $this->response->setJsonContent(['message' => 'updated']);
+                }
+            } else {
                 $this->response->setStatusCode(201);
-                return $this->response->setJsonContent(['message' => 'updated']);
+                return $this->response->setJsonContent(['error' => 'id and status is required']);
             }
         }
     }

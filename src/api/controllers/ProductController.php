@@ -100,28 +100,50 @@ class ProductController extends Controller
             $data = $this->request->getPost();
             foreach ($data as $key => $value) {
                 $data['key'] = $this->escaper->sanitize($value);
+            };
+            if (isset($data['name']) && isset($data['price']) && isset($data['category']) && isset($data['stock'])) {
+
+                if ($data['price'] > 0 && $data['stock'] > 0) {
+                    $status = $this->product->postProduct($data);
+                    $id =  $status->getInsertedId();
+                    $id = (array)$id;
+                    if ($status) {
+                        $this->response->setStatusCode(201);
+                        return $this->response->setJsonContent(['message' => 'product added successfully with id -  ' . $id['oid']]);
+                    }
+                } else {
+                    $this->response->setStatusCode(401);
+                    return $this->response->setJsonContent(['error' => 'name and stock must be greater than 0']);
+                }
+            } else {
+                $this->response->setStatusCode(401);
+                return $this->response->setJsonContent(['error' => 'name ,price, category, stock must be provided']);
             }
-            $status = $this->product->postProduct($data);
-            if ($status) {
-                $this->response->setStatusCode(201);
-                return $this->response->setJsonContent(['message' => 'created']);
-            }
+        } else {
+            $this->response->setStatusCode(401);
+            return $this->response->setJsonContent(['error' => 'no data provided']);
         }
     }
 
     public function updateProduct()
     {
 
-        if ($this->request->getPut()) {
-            $data = $this->request->getPut();
-            foreach ($data as $key => $value) {
-                $data['key'] = $this->escaper->sanitize($value);
+        if ($this->request->getPost()) {
+            $data = $this->request->getPost();
+
+            if (isset($data['id'])) {
+                $status = $this->product->putProduct($data);
+                if ($status) {
+                    $this->response->setStatusCode(201);
+                    return $this->response->setJsonContent(['message' => 'updated']);
+                }
+            } else {
+                $this->response->setStatusCode(401);
+                return $this->response->setJsonContent(['error' => 'product id must be provided']);
             }
-            $status = $this->product->putProduct($data);
-            if ($status) {
-                $this->response->setStatusCode(201);
-                return $this->response->setJsonContent(['message' => 'updated']);
-            }
+        } else {
+            $this->response->setStatusCode(401);
+            return $this->response->setJsonContent(['error' => 'no data provided']);
         }
     }
 

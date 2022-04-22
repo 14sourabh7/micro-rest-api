@@ -67,8 +67,25 @@ class OrderHelper extends Injectable
 
     public function postOrder($data)
     {
-        $result =  $this->mongo->store->orders->insertOne($data);
-        return $result;
+        $product = new \App\Db\ProductHelper();
+        $result = $product->getSingle($data['product_id']);
+
+        if (count($result) > 0) {
+            if ($result[0]['stock'] >= $data['quantity']) {
+                $result[0]['stock'] = $result[0]['stock'] - $data['quantity'];
+                $product->putProduct(['id' => $data['product_id'], "stock" => $result[0]['stock']]);
+                $result =  $this->mongo->store->orders->insertOne($data);
+                $id =  $result->getInsertedId();
+                $id = (array)$id;
+
+
+                return ['message' => "orders created successfully with id -" . $id['oid']];
+            } else {
+                return ['error' => "available stock " . $result[0]['stock']];
+            }
+        } else {
+            return ['error' => "product not found"];
+        }
     }
 
     public function putOrder($data)

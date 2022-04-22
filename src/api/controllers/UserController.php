@@ -63,7 +63,6 @@ class UserController extends Controller
                     "email" => $email,
                     "user" => $user
                 );
-
                 $jwt = JWT::encode($payload, $privateKey, 'EdDSA');
                 $this->response->setStatusCode(200);
                 $response = $this->response->setJsonContent(["key" => $jwt]);

@@ -41,9 +41,9 @@ class MiddlewareHelper extends Injectable
             $this->session->set('user', $user);
 
 
-            // if (true !== $acl->isAllowed($bearer, $controller, $action)) {
-            //     return false;
-            // }
+            if (true !== $acl->isAllowed($bearer, $controller, $action)) {
+                return false;
+            }
             return true;
         } catch (\Exception $e) {
             return false;
