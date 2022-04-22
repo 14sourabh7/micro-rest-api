@@ -98,6 +98,7 @@ class OrderHelper extends Injectable
             if ($result[0]['stock'] >= $data['quantity']) {
                 $result[0]['stock'] = $result[0]['stock'] - $data['quantity'];
                 $product->putProduct(['id' => $data['product_id'], "stock" => $result[0]['stock']]);
+                $data['status'] = 'paid';
                 $result =  $this->mongo->store->orders->insertOne($data);
                 $id =  $result->getInsertedId();
                 $id = (array)$id;
