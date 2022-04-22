@@ -13,9 +13,13 @@ switch ($collection) {
         $user->setHandler(
             UserController::class,
             true
-        )->setPrefix('/user')
-            ->get('/', 'index')
-            ->get('/accesstoken', 'userAccesToken');
+        )->setPrefix('/user');
+        $routes = (array)$config->get('routes')->get($collection)->toArray();
+        foreach ($routes as $request => $url) {
+            foreach ($url as $key => $value) {
+                $user->$request($value[0], $value[1]);
+            }
+        }
 
         $app->mount($user);
         break;
@@ -24,15 +28,14 @@ switch ($collection) {
         $product->setHandler(
             ProductController::class,
             true
-        )->setPrefix('/product')
-            ->get('/search/{keyword}', 'search')
-            ->get('/get', 'getAll')
-            ->get('/get/{id}', 'getSingle')
-            ->get('/get/{per_page}/{page}/{select}/{filters}', 'get')
-            ->post('/post', 'addProduct')
-            ->put('/put', 'updateProduct')
-            ->delete('/delete/{id}', 'deleteProduct');
+        )->setPrefix('/product');
 
+        $routes = (array)$config->get('routes')->get($collection)->toArray();
+        foreach ($routes as $request => $url) {
+            foreach ($url as $key => $value) {
+                $product->$request($value[0], $value[1]);
+            }
+        }
         $app->mount($product);
         break;
     case 'order':
@@ -40,13 +43,13 @@ switch ($collection) {
         $order->setHandler(
             OrderController::class,
             true
-        )->setPrefix('/order')
-            ->get('/get', 'getAll')
-            ->get('/get/{start}/{end}', 'getDataByDate')
-            ->get('/get/{start}/{end}/{filter}', 'getDataByDateFilter')
-            ->post('/post', 'addOrder')
-            ->put('/put', 'updateOrder');
-
+        )->setPrefix('/order');
+        $routes = (array)$config->get('routes')->get($collection)->toArray();
+        foreach ($routes as $request => $url) {
+            foreach ($url as $key => $value) {
+                $order->$request($value[0], $value[1]);
+            }
+        }
         $app->mount($order);
         break;
     case 'acl':
@@ -54,9 +57,13 @@ switch ($collection) {
         $acl->setHandler(
             AclController::class,
             true
-        )->setPrefix('/acl')
-            ->get('/', 'index');
-
+        )->setPrefix('/acl');
+        $routes = (array)$config->get('routes')->get($collection)->toArray();
+        foreach ($routes as $request => $url) {
+            foreach ($url as $key => $value) {
+                $acl->$request($value[0], $value[1]);
+            }
+        }
         $app->mount($acl);
         break;
 
