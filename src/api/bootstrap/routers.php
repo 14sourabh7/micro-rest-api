@@ -5,73 +5,24 @@ use Phalcon\Mvc\Micro\Collection as MicroCollection;
 $uri = new \Phalcon\Http\Message\Uri($_SERVER['REQUEST_URI']);
 $path = $uri->getPath();
 $parts = explode("/", $path);
+
 $collection = $parts[1];
+$controller = ucfirst($collection);
 
-switch ($collection) {
-    case 'user':
-        $user = new MicroCollection();
-        $user->setHandler(
-            UserController::class,
-            true
-        )->setPrefix('/user');
-        $routes = (array)$config->get('routes')->get($collection)->toArray();
-        foreach ($routes as $request => $url) {
-            foreach ($url as $key => $value) {
-                $user->$request($value[0], $value[1]);
-            }
-        }
 
-        $app->mount($user);
-        break;
-    case 'product':
-        $product = new MicroCollection();
-        $product->setHandler(
-            ProductController::class,
-            true
-        )->setPrefix('/product');
-
-        $routes = (array)$config->get('routes')->get($collection)->toArray();
-        foreach ($routes as $request => $url) {
-            foreach ($url as $key => $value) {
-                $product->$request($value[0], $value[1]);
-            }
-        }
-        $app->mount($product);
-        break;
-    case 'order':
-        $order = new MicroCollection();
-        $order->setHandler(
-            OrderController::class,
-            true
-        )->setPrefix('/order');
-        $routes = (array)$config->get('routes')->get($collection)->toArray();
-        foreach ($routes as $request => $url) {
-            foreach ($url as $key => $value) {
-                $order->$request($value[0], $value[1]);
-            }
-        }
-        $app->mount($order);
-        break;
-    case 'acl':
-        $acl = new MicroCollection();
-        $acl->setHandler(
-            AclController::class,
-            true
-        )->setPrefix('/acl');
-        $routes = (array)$config->get('routes')->get($collection)->toArray();
-        foreach ($routes as $request => $url) {
-            foreach ($url as $key => $value) {
-                $acl->$request($value[0], $value[1]);
-            }
-        }
-        $app->mount($acl);
-        break;
-
-    default:
-        $app->get('/notFound', '');
+//setting router
+$router = new MicroCollection();
+$router->setHandler(
+    $controller . "Controller"::class,
+    true
+)->setPrefix("/$collection");
+$routes = (array)$config->get('routes')->get($collection)->toArray();
+foreach ($routes as $request => $url) {
+    foreach ($url as $key => $value) {
+        $router->$request($value[0], $value[1]);
+    }
 }
-
-
+$app->mount($router);
 
 
 //middleware to verify token

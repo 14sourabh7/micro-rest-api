@@ -45,8 +45,10 @@ return [
 
         // user
         "user" => [
-            ['/', 'index'],
-            ['/accesstoken', 'userAccesToken']
+            "get" => [
+                ['/', 'index'],
+                ['/accesstoken', 'userAccesToken']
+            ]
         ],
 
         //acl
