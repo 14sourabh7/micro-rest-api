@@ -20,7 +20,13 @@ class OrderController extends Controller
         return $response;
     }
 
-
+    /**
+     * function to return orders filtered by date
+     *
+     * @param [type] $start
+     * @param [type] $end
+     * @return json
+     */
     public function getDataByDate($start, $end)
     {
         $orders = $this->order->getOrderByDate(
@@ -32,6 +38,15 @@ class OrderController extends Controller
         return $response;
     }
 
+
+    /**
+     * function to return orders filtered by date and status
+     *
+     * @param [type] $start
+     * @param [type] $end
+     * @param [type] $filter
+     * @return json
+     */
     public function getDataByDateFilter($start, $end, $filter)
     {
         $orders = $this->order->getOrderByDateFilter(
@@ -47,6 +62,13 @@ class OrderController extends Controller
         $response = $this->response->setJsonContent($orders);
         return $response;
     }
+
+
+    /**
+     * function to call post order and return response
+     *
+     * @return void
+     */
     public function addOrder()
     {
         if ($this->request->getPost()) {
@@ -79,11 +101,18 @@ class OrderController extends Controller
         }
     }
 
+
+    /**
+     * function to call put order and return response
+     *
+     * @return void
+     */
     public function updateOrder()
     {
 
-        if ($this->request->getPost()) {
-            $data = $this->request->getPost();
+        if ($this->request->getPut()) {
+
+            $data = $this->request->getPut();
 
             foreach ($data as $key => $value) {
                 $data['key'] = $this->escaper->sanitize($value);

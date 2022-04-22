@@ -144,13 +144,25 @@ class ProductHelper extends Injectable
 
     }
 
-
+    /**
+     * function to add product in db
+     *
+     * @param [type] $data
+     * @return void
+     */
     public function postProduct($data)
     {
         $result =  $this->mongo->store->products->insertOne($data);
         return $result;
     }
 
+
+    /**
+     * function to update product in db
+     *
+     * @param [type] $data
+     * @return void
+     */
     public function putProduct($data)
     {
 
@@ -168,6 +180,12 @@ class ProductHelper extends Injectable
 
 
 
+    /**
+     * function to delete product from db
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function deleteProduct($id)
     {
 

@@ -61,6 +61,17 @@ class UserController extends Controller
         }
         if ($this->request->getPost('access')) {
             $token = $this->api->getAccess($this->request->getPost('token'));
+            $this->response->redirect('/');
         }
+    }
+
+    public function logoutAction()
+    {
+        $this->session->set('login', 0);
+        $this->session->set('uid', 0);
+        $this->session->set('name', 0);
+        $this->session->set('email', 0);
+        $this->session->set('role', 0);
+        $this->response->redirect('/user');
     }
 }

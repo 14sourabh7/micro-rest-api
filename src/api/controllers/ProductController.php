@@ -1,7 +1,6 @@
 <?php
 
 use Phalcon\Mvc\Controller;
-use Firebase\JWT\JWT;
 
 class ProductController extends Controller
 {
@@ -94,6 +93,13 @@ class ProductController extends Controller
         return $response;
     }
 
+    /**
+     * addProduct()
+     * 
+     * calling post product function and returning the response
+     *
+     * @return json
+     */
     public function addProduct()
     {
         if ($this->request->getPost()) {
@@ -125,11 +131,19 @@ class ProductController extends Controller
         }
     }
 
+
+    /**
+     * updateProduct()
+     * 
+     * function to return update response
+     *
+     * @return json
+     */
     public function updateProduct()
     {
 
-        if ($this->request->getPost()) {
-            $data = $this->request->getPost();
+        if ($this->request->getPut()) {
+            $data = $this->request->getPut();
 
             if (isset($data['id'])) {
                 $status = $this->product->putProduct($data);
@@ -147,6 +161,14 @@ class ProductController extends Controller
         }
     }
 
+    /**
+     * deleteProduct($id)
+     * 
+     * function to call delete product method and return response
+     *
+     * @param [type] $id
+     * @return json
+     */
     public function deleteProduct($id)
     {
         if ($id) {

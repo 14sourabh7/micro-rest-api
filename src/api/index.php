@@ -115,7 +115,7 @@ switch ($collection) {
             ->get('/get/{id}', 'getSingle')
             ->get('/get/{per_page}/{page}/{select}/{filters}', 'get')
             ->post('/post', 'addProduct')
-            ->post('/put', 'updateProduct')
+            ->put('/put', 'updateProduct')
             ->delete('/delete/{id}', 'deleteProduct');
 
         $app->mount($product);
@@ -130,7 +130,7 @@ switch ($collection) {
             ->get('/get/{start}/{end}', 'getDataByDate')
             ->get('/get/{start}/{end}/{filter}', 'getDataByDateFilter')
             ->post('/post', 'addOrder')
-            ->post('/put', 'updateOrder');
+            ->put('/put', 'updateOrder');
 
         $app->mount($order);
         break;

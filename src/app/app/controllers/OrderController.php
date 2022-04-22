@@ -7,6 +7,7 @@ class OrderController extends Controller
 {
     public function indexAction()
     {
+        $this->api->checkToken();
         $this->view->locale = $this->locale;
         if ($this->request->get('statusfilter')) {
             $startdate = $this->request->get('start');
@@ -46,6 +47,7 @@ class OrderController extends Controller
      */
     public function addorderAction()
     {
+        $this->api->checkToken();
         $this->view->locale = $this->locale;
         if ($this->request->getPost()) {
             $data = $this->request->getPost();

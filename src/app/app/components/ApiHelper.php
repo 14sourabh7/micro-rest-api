@@ -260,9 +260,6 @@ class ApiHelper extends Injectable
     public function addOrder($data)
     {
         $this->addData('order', $data);
-        $quantity = $data['quantity'];
-        $stock = $this->getSingleProduct($data['product_id'])->stock - $quantity;
-        $this->updateData('product', ['id' => $data['product_id'], 'stock' => $stock]);
     }
 
 
@@ -293,6 +290,13 @@ class ApiHelper extends Injectable
     }
 
 
+    /**
+     * function to return login data
+     *
+     * @param [type] $name
+     * @param [type] $password
+     * @return void
+     */
     public function checkUser($name, $password)
     {
         $result = $this->mongo->store->user->find([
@@ -304,6 +308,15 @@ class ApiHelper extends Injectable
         }
     }
 
+
+
+    /**
+     * function to check if user exists
+     *
+     * @param [type] $user
+     * @param [type] $email
+     * @return void
+     */
     public function checkUserExists($user, $email)
     {
         $result = $this->mongo->store->user->find([
@@ -316,6 +329,16 @@ class ApiHelper extends Injectable
             return true;
         }
     }
+
+
+    /**
+     * function to add user in db
+     *
+     * @param [type] $user
+     * @param [type] $email
+     * @param [type] $password
+     * @return void
+     */
     public function addUser($user,  $email, $password)
     {
         if ($this->checkUserExists($user, $email)) {
@@ -328,6 +351,13 @@ class ApiHelper extends Injectable
         }
     }
 
+
+
+    /**
+     * function making api request to get authorisation code
+     *
+     * @return void
+     */
     public function getAuth()
     {
         $response = $this->client->request(
@@ -341,6 +371,12 @@ class ApiHelper extends Injectable
     }
 
 
+    /**
+     * function making api request to get access token
+     *
+     * @param [type] $token
+     * @return void
+     */
     public function getAccess($token)
     {
         $response = $this->client->request(
@@ -359,5 +395,28 @@ class ApiHelper extends Injectable
         );
         return
             $data;
+    }
+
+
+    /**
+     * function to handle login logout and token availability check
+     *
+     * @return void
+     */
+    public function checkToken()
+    {
+        $login  = $this->session->get('login');
+        if ($login) {
+            $user =  $this->mongo->store->user->find(['email' => $this->session->get('email')]);
+            foreach ($user as $users => $details) {
+                if (isset($details->token)) {
+                    $this->session->set('token', $details->token);
+                } else {
+                    $this->response->redirect('/user/connectapi');
+                }
+            }
+        } else {
+            $this->response->redirect('/user');
+        }
     }
 }

@@ -38,6 +38,14 @@ class OrderHelper extends Injectable
         return $this->setResponse($result);
     }
 
+
+    /**
+     * functon to get order filtered by date from db
+     *
+     * @param [type] $start
+     * @param [type] $end
+     * @return void
+     */
     public function getOrderByDate($start, $end)
     {
         $result =
@@ -49,6 +57,16 @@ class OrderHelper extends Injectable
         return $this->setResponse($result);
     }
 
+
+
+    /**
+     * function to get orders filtered by date and status from db
+     *
+     * @param [type] $start
+     * @param [type] $end
+     * @param [type] $filter
+     * @return void
+     */
     public function getOrderByDateFilter($start, $end, $filter)
     {
         $result =
@@ -65,6 +83,12 @@ class OrderHelper extends Injectable
 
 
 
+    /**
+     * function to create new order
+     *
+     * @param [type] $data
+     * @return void
+     */
     public function postOrder($data)
     {
         $product = new \App\Db\ProductHelper();
@@ -88,6 +112,14 @@ class OrderHelper extends Injectable
         }
     }
 
+
+
+    /**
+     * function to update status of order
+     *
+     * @param [type] $data
+     * @return void
+     */
     public function putOrder($data)
     {
 

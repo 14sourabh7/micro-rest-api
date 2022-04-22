@@ -7,6 +7,7 @@ class IndexController extends Controller
 {
     public function indexAction()
     {
+        $this->api->checkToken();
         $this->view->product = [];
         $this->view->locale = $this->locale;
         if ($this->request->get('search')) {
@@ -37,6 +38,7 @@ class IndexController extends Controller
      */
     public function addproductAction()
     {
+        $this->api->checkToken();
         $check = $this->request->isPost();
         $this->view->locale = $this->locale;
         if ($check) {
