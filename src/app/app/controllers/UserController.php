@@ -25,7 +25,7 @@ class UserController extends Controller
         }
 
         if ($this->session->get('login')) {
-            $this->response->redirect('/');
+            $this->response->redirect('/user/connectapi');
         }
     }
 
@@ -56,12 +56,10 @@ class UserController extends Controller
         $this->view->auth = 0;
         if ($this->request->getPost('authorise')) {
             $token = $this->api->getAuth();
-            $this->view->token = $token['key'];
-            $this->view->auth = 1;
-        }
-        if ($this->request->getPost('access')) {
-            $token = $this->api->getAccess($this->request->getPost('token'));
-            $this->response->redirect('/');
+            if ($token['key']) {
+                $token = $this->api->getAccess($token['key']);
+                $this->response->redirect('/');
+            }
         }
     }
 
@@ -73,5 +71,23 @@ class UserController extends Controller
         $this->session->set('email', 0);
         $this->session->set('role', 0);
         $this->response->redirect('/user');
+    }
+
+    public function webhookAction()
+    {
+        $this->view->url = "";
+        if (!$this->session->get('login')) {
+            $this->response->redirect('/user');
+        }
+        $name = $this->request->get('name');
+        $secret = $this->request->get('secret');
+        $event = $this->request->get('event');
+        if ($name && $secret && $event) {
+            $this->mongo->store->user->Update(
+                ["email" => $this->session->get('email')],
+                ['$set' => ['hookname' => $name, 'event' => $event, 'secret' => $secret]]
+            );
+            $this->view->url = "http://192.168.2.11:8000/index/recieveproducts";
+        }
     }
 }

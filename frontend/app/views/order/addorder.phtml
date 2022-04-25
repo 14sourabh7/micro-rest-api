@@ -1,0 +1,42 @@
+<div class="row shadow-md bg-dark">
+    <a href="/" class='btn  btn-primary float-right col'><?php echo $locale->_('products') ?></a>
+    <a href="/index/addproduct" class='btn btn-success ms-3 float-right col'><?php echo $locale->_('add') . " " . $locale->_('product') ?></a>
+    <a href="/order" class='btn btn-danger ms-3 float-right col'><?php echo $locale->_('orders') ?></a>
+    <a href="/order/addorder" class='btn btn-secondary ms-3 float-right col'><?php echo $locale->_('add') . " " . $locale->_('order') ?></a>
+</div>
+
+<h2><?php echo $locale->_('add') . " " . $locale->_('order') ?></h2>
+<div class='row'>
+    <div class="col-7 ">
+        <form action="" method="post">
+            <div id='addForm'>
+                <div class="mb-3">
+                    <label for="name" class="form-label"><?php echo $locale->_('name')  ?></label>
+                    <input type="text" class="form-control" name="name" aria-describedby="name" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="quantity" class="form-label"><?php echo $locale->_('quantity')  ?></label>
+                    <input type="number" class="form-control" id='stock' min=1 name='quantity' required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="product" class="form-label"><?php echo $locale->_('select') . " " . $locale->_('products') ?></label>
+                    <select name="product" id='products' class='btn' required>
+
+                    </select>
+                </div>
+                <input type="hidden" name="status" value='ordered'>
+                <input type="hidden" name="product id" id='pid'>
+                <div class="variation"></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg"><?php echo $locale->_('create') . " " . $locale->_('order') ?></button>
+        </form>
+
+    </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="../public/js/order.js"></script>

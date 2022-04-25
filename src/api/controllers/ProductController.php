@@ -1,6 +1,7 @@
 <?php
 
 use Phalcon\Mvc\Controller;
+use GuzzleHttp\Client;
 
 class ProductController extends Controller
 {

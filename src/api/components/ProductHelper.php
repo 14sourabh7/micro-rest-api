@@ -4,8 +4,12 @@ namespace App\Db;
 
 use Phalcon\Di\Injectable;
 
+
 class ProductHelper extends Injectable
 {
+
+
+
 
 
     public function checkUser($user, $password)
@@ -152,8 +156,27 @@ class ProductHelper extends Injectable
      */
     public function postProduct($data)
     {
+
         $result =  $this->mongo->store->products->insertOne($data);
+        $id = $result->getInsertedId();
+        $this->sendWebhookResponse($id);
         return $result;
+    }
+
+    public function sendWebhookResponse($id)
+    {
+        $product = $this->getSingle($id);
+        $user = $this->mongo->store->user->find();
+        foreach ($product as $key => $value) {
+            if (isset($user->secret)) {
+                $value['secret'] = $user->secret;
+                $this->client->request(
+                    'POST',
+                    "/index/recieveproducts",
+                    ['form_params' => $value]
+                );
+            }
+        }
     }
 
 
@@ -175,6 +198,8 @@ class ProductHelper extends Injectable
                 '$set' => $data
             ]
         );
+        $id = $result->getInsertedId();
+        $this->sendWebhookResponse($id);
         return $result;
     }
 

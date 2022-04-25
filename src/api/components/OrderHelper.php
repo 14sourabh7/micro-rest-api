@@ -102,8 +102,6 @@ class OrderHelper extends Injectable
                 $result =  $this->mongo->store->orders->insertOne($data);
                 $id =  $result->getInsertedId();
                 $id = (array)$id;
-
-
                 return ['message' => "orders created successfully with id -" . $id['oid']];
             } else {
                 return ['error' => "available stock " . $result[0]['stock']];

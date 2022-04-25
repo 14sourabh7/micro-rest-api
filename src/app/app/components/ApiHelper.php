@@ -10,11 +10,13 @@ class ApiHelper extends Injectable
 {
 
     private $client;
-
+    private $key;
     public function __construct()
     {
 
         $this->client = $this->setClient();
+        $this->checkToken();
+        $this->key = $this->session->get('token');
     }
 
 
@@ -49,7 +51,7 @@ class ApiHelper extends Injectable
     {
         $response = $this->client->request(
             'GET',
-            "/$controller/get?key=" . $this->config->get('api')->get('key')
+            "/$controller/get?key=" . $this->key
         );
 
         $data = $response->getBody();
@@ -70,7 +72,7 @@ class ApiHelper extends Injectable
     {
         $response = $this->client->request(
             'GET',
-            "/product/get/$id?key=" . $this->config->get('api')->get('key')
+            "/product/get/$id?key=" . $this->key
         );
 
         $data = $response->getBody();
@@ -93,7 +95,7 @@ class ApiHelper extends Injectable
 
         $response = $this->client->request(
             'GET',
-            "/product/search/$name?key=" . $this->config->get('api')->get('key')
+            "/product/search/$name?key=" . $this->key
         );
 
         $data = $response->getBody();
@@ -113,7 +115,7 @@ class ApiHelper extends Injectable
     {
         $response = $this->client->request(
             'POST',
-            "/$controller/post/?key=" . $this->config->get('api')->get('key'),
+            "/$controller/post/?key=" . $this->key,
             ['form_params' => $data]
         );
 
@@ -136,7 +138,7 @@ class ApiHelper extends Injectable
     {
         $response = $this->client->request(
             'PUT',
-            "/$controller/put/?key=" . $this->config->get('api')->get('key'),
+            "/$controller/put/?key=" . $this->key,
             ['form_params' => $data]
         );
 
@@ -159,7 +161,7 @@ class ApiHelper extends Injectable
     {
         $response = $this->client->request(
             'DELETE',
-            "/product/delete/$id/?key=" . $this->config->get('api')->get('key')
+            "/product/delete/$id/?key=" . $this->key
 
         );
 
@@ -182,7 +184,7 @@ class ApiHelper extends Injectable
         // return  $this->mongo->store->$document->find(['date' => ['$gte' => $start, '$lte' => $end]]);
         $response = $this->client->request(
             'GET',
-            "/order/get/$start/$end?key=" . $this->config->get('api')->get('key')
+            "/order/get/$start/$end?key=" . $this->key
         );
 
         $data = $response->getBody();
@@ -204,7 +206,7 @@ class ApiHelper extends Injectable
         //     $this->mongo->store->orders->find(['date' => ['$gte' => $start, '$lte' => $end], 'status' => $statusfilter]);
         $response = $this->client->request(
             'GET',
-            "/order/get/$start/$end/$statusfilter?key=" . $this->config->get('api')->get('key')
+            "/order/get/$start/$end/$statusfilter?key=" . $this->key
         );
 
         $data = $response->getBody();

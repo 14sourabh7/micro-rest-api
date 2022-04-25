@@ -9,6 +9,7 @@ services:
       - "./src/:/var/www/html/"
     ports:
       - "8080:80"
+
   api:
     build:
       dockerfile: php.Dockerfile
@@ -18,3 +19,13 @@ services:
       - "./src/api/:/var/www/html"
     ports:
       - "5000:80"
+
+  frontend:
+    build:
+      dockerfile: php.Dockerfile
+      context: .
+    restart: always
+    volumes:
+      - "./frontend/:/var/www/html"
+    ports:
+      - "8000:80"

@@ -1,0 +1,23 @@
+<form method="get" action="">
+    <h1>create webhook</h1>
+    <div class="form-group">
+        <label for="name">Webhook name</label>
+        <input type="text" class="form-control" id="name" name="name" aria-describedby="emailHelp" placeholder="enter webhook name" required>
+
+    </div>
+    <div class="form-group">
+        <label for="secret">secret key</label>
+        <input type="password" class="form-control" id="secret" name="secret" placeholder="enter secret key" required>
+    </div>
+    <div class="form-group">
+        <label for="event">Event</label>
+        <select name="event" id="event" class="form-control">
+            <option value="productStatus">product change status</option>
+        </select>
+    </div>
+    <input type="submit" class="btn btn-primary" value="submit">
+</form>
+
+<?php
+echo $url;
+?>
