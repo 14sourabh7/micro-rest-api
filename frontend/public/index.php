@@ -6,7 +6,7 @@
     use Phalcon\Mvc\Application;
     use Phalcon\Url;
     use Phalcon\Http\Response;
-    use GuzzleHttp\Client;
+
 
     define('BASE_PATH', dirname(__DIR__));
     define('APP_PATH', BASE_PATH . '/app');
@@ -55,13 +55,7 @@
         return new Response();
     });
 
-    $container->set('client', function () {
-        $client = new Client([
-            // Base URI is used with relative requests
-            'base_uri' => "http://192.168.2.11:8000/",
-        ]);
-        return $client;
-    });
+
 
     $container->set('locale', (new \App\Components\Locale())->getTranslator());
     //setting connection with mongodb

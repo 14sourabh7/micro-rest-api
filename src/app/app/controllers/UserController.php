@@ -83,9 +83,9 @@ class UserController extends Controller
         $secret = $this->request->get('secret');
         $event = $this->request->get('event');
         if ($name && $secret && $event) {
-            $this->mongo->store->user->Update(
+            $this->mongo->store->user->updateOne(
                 ["email" => $this->session->get('email')],
-                ['$set' => ['hookname' => $name, 'event' => $event, 'secret' => $secret]]
+                ['$set' => ['hook' => ['name' => $name, 'secret' => $secret, 'event' => $event]]]
             );
             $this->view->url = "http://192.168.2.11:8000/index/recieveproducts";
         }

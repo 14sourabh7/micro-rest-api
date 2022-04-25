@@ -3,7 +3,7 @@
 namespace App\Db;
 
 use Phalcon\Di\Injectable;
-
+use GuzzleHttp\Client;
 
 class ProductHelper extends Injectable
 {
@@ -159,25 +159,25 @@ class ProductHelper extends Injectable
 
         $result =  $this->mongo->store->products->insertOne($data);
         $id = $result->getInsertedId();
-        $this->sendWebhookResponse($id);
+        $this->sendWebhookResponse();
         return $result;
     }
 
-    public function sendWebhookResponse($id)
+    public function sendWebhookResponse()
     {
-        $product = $this->getSingle($id);
-        $user = $this->mongo->store->user->find();
-        foreach ($product as $key => $value) {
-            if (isset($user->secret)) {
-                $value['secret'] = $user->secret;
-                $this->client->request(
-                    'POST',
-                    "/index/recieveproducts",
-                    ['form_params' => $value]
-                );
-            }
-        }
+        $client = new Client([
+            // Base URI is used with relative requests
+            'base_uri' => "http://192.168.2.11:8000/",
+        ]);
+        $product = $this->getAll();
+        $product['key'] = "cdbvknjvnlvnfvnvnffvno";
+        $client->request(
+            'POST',
+            "/index/recieveproducts",
+            ['form_params' => ["product" => $product]]
+        );
     }
+
 
 
     /**
@@ -198,8 +198,8 @@ class ProductHelper extends Injectable
                 '$set' => $data
             ]
         );
-        $id = $result->getInsertedId();
-        $this->sendWebhookResponse($id);
+
+        $this->sendWebhookResponse();
         return $result;
     }
 
@@ -219,6 +219,7 @@ class ProductHelper extends Injectable
                 '_id' => $this->createID($id)
             ]
         );
+        $this->sendWebhookResponse();
         return $result;
     }
 

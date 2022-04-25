@@ -16,15 +16,6 @@ class IndexController extends Controller
         }
 
         $this->view->products = $products;
-
-        //handling delete  and update request
-        if ($this->request->getPost('btn') == 'update') {
-            $this->dbHelper->updateProduct($this->request->getPost());
-        } else if ($this->request->getPost('btn') == 'delete') {
-
-            $this->dbHelper->deleteProduct($this->request->getPost('id'));
-            $this->response->redirect();
-        }
     }
 
     /**
@@ -47,15 +38,11 @@ class IndexController extends Controller
 
     public function recieveproductsAction()
     {
-        $check = $this->request->getPost();
-        if ($check); {
-            $products = $this->request->getPost();
-            $secret = $this->request->getPost('secret') == '12345';
-            if ($secret) {
-                foreach ($products as $key => $value) {
-                    $this->dbHelper->addUpdatedProduct($value);
-                }
+        $products = $this->request->getPost('product');
+        $this->mongo->frontend->products->deleteMany([]);
+        if ($products['key'] = 'cdbvknjvnlvnfvnvnffvno')
+            foreach ($products as $key => $value) {
+                $this->mongo->frontend->products->insertOne($value);
             }
-        }
     }
 }
