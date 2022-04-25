@@ -83,6 +83,7 @@ class ProductHelper extends Injectable
     public function getAll()
     {
         $result = $this->mongo->store->products->find();
+
         return $this->setResponse($result);
     }
 
@@ -165,17 +166,19 @@ class ProductHelper extends Injectable
 
     public function sendWebhookResponse()
     {
-        $client = new Client([
-            // Base URI is used with relative requests
-            'base_uri' => "http://192.168.2.11:8000/",
-        ]);
+        $client = new Client();
         $product = $this->getAll();
-        $product['key'] = "cdbvknjvnlvnfvnvnffvno";
-        $client->request(
-            'POST',
-            "/index/recieveproducts",
-            ['form_params' => ["product" => $product]]
-        );
+        $hooks = $this->mongo->store->webhooks->find([]);
+        $hooks = iterator_to_array($hooks);
+        foreach ($hooks as $key => $value) {
+            $product['key'] = $value['secret'];
+            $product['email'] = $value['email'];
+            $client->request(
+                'POST',
+                $value['url'],
+                ['form_params' => ["product" => $product]]
+            );
+        }
     }
 
 

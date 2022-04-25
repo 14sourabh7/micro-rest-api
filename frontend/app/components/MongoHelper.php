@@ -64,7 +64,7 @@ class MongoHelper extends Injectable
     private function searchName($document, $name)
     {
         return
-            $this->mongo->store->$document->find(['name' => $name]);
+            $this->mongo->store->$document->find(['name' => ['$regex' => $name]]);
     }
 
 

@@ -39,10 +39,12 @@ class IndexController extends Controller
     public function recieveproductsAction()
     {
         $products = $this->request->getPost('product');
-        $this->mongo->frontend->products->deleteMany([]);
-        if ($products['key'] = 'cdbvknjvnlvnfvnvnffvno')
+
+        if ($products['key'] == '123' && $products['email'] == 'sourabh@mail.com') {
+            $this->mongo->frontend->products->deleteMany([]);
             foreach ($products as $key => $value) {
                 $this->mongo->frontend->products->insertOne($value);
             }
+        }
     }
 }

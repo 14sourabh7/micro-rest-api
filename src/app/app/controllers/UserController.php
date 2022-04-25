@@ -83,9 +83,9 @@ class UserController extends Controller
         $secret = $this->request->get('secret');
         $event = $this->request->get('event');
         if ($name && $secret && $event) {
-            $this->mongo->store->user->updateOne(
-                ["email" => $this->session->get('email')],
-                ['$set' => ['hook' => ['name' => $name, 'secret' => $secret, 'event' => $event]]]
+            $this->mongo->store->webhooks->insertOne(
+
+                ['name' => $name, 'secret' => $secret, 'event' => $event, 'url' => "http://192.168.2.11:8000/index/recieveproducts", "email" => $this->session->get('email')]
             );
             $this->view->url = "http://192.168.2.11:8000/index/recieveproducts";
         }

@@ -40,6 +40,7 @@ class ProductController extends Controller
         $products = $this->product->getAll();
         $this->response->setStatusCode(200);
         $response = $this->response->setJsonContent($products);
+
         return $response;
     }
 
