@@ -47,9 +47,18 @@ class IndexController extends Controller
         $products = $this->request->getPost('product');
 
         if ($products['key'] == '123' && $products['email'] == 'sourabh@mail.com') {
-            $this->mongo->frontend->products->deleteMany([]);
-            foreach ($products as $key => $value) {
-                $this->mongo->frontend->products->insertOne($value);
+            if ($products['opr'] == 'insert') {
+                $this->mongo->frontend->products->insertOne($products['data'][0]);
+            } else if ($products['opr'] == 'update') {
+                $this->mongo->frontend->products->updateOne(
+                    ['_id' => $products['data'][0]['_id']],
+                    ['$set' => $products['updates']]
+                );
+            } else if ($products['opr'] == 'delete') {
+                $id = new \MongoDB\BSON\ObjectID($products['del']);
+                $this->mongo->frontend->products->deleteOne(
+                    ['_id' => $id]
+                );
             }
         }
     }

@@ -149,6 +149,7 @@ class ProductController extends Controller
 
             if (isset($data['id'])) {
                 $status = $this->product->putProduct($data);
+
                 if ($status) {
                     $this->response->setStatusCode(201);
                     return $this->response->setJsonContent(['message' => 'updated']);

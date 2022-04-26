@@ -142,7 +142,7 @@ class ProductHelper extends Injectable
 
         $result =  $this->mongo->store->products->insertOne($data);
         $id = $result->getInsertedId();
-        $this->sendWebhookResponse();
+        $this->sendWebhookResponse($id, 'insert', []);
         return $result;
     }
 
@@ -152,18 +152,30 @@ class ProductHelper extends Injectable
      *
      * @return void
      */
-    public function sendWebhookResponse()
+    public function sendWebhookResponse($id, $opr, $updatedfields)
     {
+
         $client = new Client();
-        $product = $this->getAll();
+        if ($opr !== 'delete')
+            $products = $this->getSingle($id);
         $hooks = $this->mongo->store->webhooks->find([]);
         $hooks = iterator_to_array($hooks);
         foreach ($hooks as $key => $value) {
             $product['key'] = $value['secret'];
             $product['email'] = $value['email'];
+            if ($opr == 'delete') {
+                $product['del'] = $id;
+            } else {
+                if ($opr == 'update') {
+                    $product['updates'] = $updatedfields;
+                }
+                $product['data'] = $products;
+            }
+            $product['opr'] = $opr;
+
             $client->request(
                 'POST',
-                $value['url'],
+                urldecode($value['url']),
                 ['form_params' => ["product" => $product]]
             );
         }
@@ -180,6 +192,17 @@ class ProductHelper extends Injectable
     public function putProduct($data)
     {
 
+        $product =  $this->getSingle($data['id']);
+        foreach ($data as $key => $value) {
+            if (isset($product[0][$key])) {
+                if ($product[0][$key] == $value) {
+                } else {
+                    $updatedfields[$key] = $value;
+                }
+            } else {
+                $upatedfields[$key] = $value;
+            }
+        }
         $result =  $this->mongo->store->products->updateOne(
             [
 
@@ -190,7 +213,7 @@ class ProductHelper extends Injectable
             ]
         );
 
-        $this->sendWebhookResponse();
+        $this->sendWebhookResponse($data['id'], 'update', $updatedfields);
         return $result;
     }
 
@@ -210,7 +233,7 @@ class ProductHelper extends Injectable
                 '_id' => $this->createID($id)
             ]
         );
-        $this->sendWebhookResponse();
+        $this->sendWebhookResponse($id, 'delete', []);
         return $result;
     }
 

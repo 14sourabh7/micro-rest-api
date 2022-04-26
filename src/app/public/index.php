@@ -9,7 +9,7 @@
     use Phalcon\Config\ConfigFactory;
     use Phalcon\Session\Manager as SessionManager;
     use Phalcon\Session\Adapter\Stream;
-
+    use Phalcon\Debug;
 
 
     define('BASE_PATH', dirname(__DIR__));
@@ -125,4 +125,4 @@
     // echo 'Exception: ', $e->getMessage();
     // }
 
-    echo $toolbar->render();
+    // echo $toolbar->render();
