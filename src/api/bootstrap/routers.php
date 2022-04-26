@@ -51,6 +51,8 @@ $app->before(
     }
 );
 
+
+
 //if route not found
 $app->notFound(function () use ($app) {
     $app->response->setStatusCode(404);

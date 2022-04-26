@@ -34,10 +34,12 @@ final class Versions
      */
     const VERSIONS          = array (
   'composer/package-versions-deprecated' => '1.11.99.5@b4f54f74ef3453349c24a845d22392cd31e65f1d',
+  'fabfuel/prophiler' => '1.6.0@3b8cbc54b6181844abeeba57a44e0b2b2ea3da9c',
   'jean85/pretty-package-versions' => '1.6.0@1e0104b46f045868f11942aea058cd7186d6c303',
   'mongodb/mongodb' => '1.12.0@e4a7594ac4b31635fa77455c4038a7013024ba28',
+  'psr/log' => '1.1.4@d49695b909c3b7628b6289db5479a1c204601f11',
   'symfony/polyfill-php80' => 'v1.25.0@4407588e0d3f1f52efb65fbe92babe41f37fe50c',
-  '__root__' => 'dev-main@7e21f9d733a96ec4577dd09dffbbcc3b4e7fd902',
+  '__root__' => 'dev-webhook@a19593e7df58b45ef01f9e56cc3671328abb81a6',
 );
 
     private function __construct()

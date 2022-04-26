@@ -6,12 +6,18 @@
     use Phalcon\Mvc\Application;
     use Phalcon\Url;
     use Phalcon\Http\Response;
+    use Phalcon\Debug;
 
+    $debug = new Debug();
+    $debug->listen(false, true);
 
     define('BASE_PATH', dirname(__DIR__));
     define('APP_PATH', BASE_PATH . '/app');
 
-    require BASE_PATH . '/vendor/autoload.php';
+    require '../vendor/autoload.php';
+
+
+
 
     // Register an autoloader
     $loader = new Loader();
@@ -76,12 +82,14 @@
 
 
 
-    try {
-        // Handle the request
-        $response = $application->handle(
-            $_SERVER["REQUEST_URI"]
-        );
-        $response->send();
-    } catch (\Exception $e) {
-        echo 'Exception: ', $e->getMessage();
-    }
+
+
+    // try {
+    // Handle the request
+    $response = $application->handle(
+        $_SERVER["REQUEST_URI"]
+    );
+    $response->send();
+    // } catch (\Exception $e) {
+    // echo 'Exception: ', $e->getMessage();
+    // }

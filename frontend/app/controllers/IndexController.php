@@ -33,9 +33,15 @@ class IndexController extends Controller
         } else {
             $this->response->redirect('/');
         }
-        return json_encode($product);;
+        return json_encode($product);
     }
 
+
+    /**
+     * action to handle webhook response
+     *
+     * @return void
+     */
     public function recieveproductsAction()
     {
         $products = $this->request->getPost('product');

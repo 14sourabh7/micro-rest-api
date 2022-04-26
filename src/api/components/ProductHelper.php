@@ -10,24 +10,6 @@ class ProductHelper extends Injectable
 
 
 
-
-
-    public function checkUser($user, $password)
-    {
-        $result = $this->mongo->store->user->find(["username" => $user, "password" => $password]);
-        foreach ($result as $user => $details) {
-            return true;
-        }
-    }
-
-    public function getRole($user, $password)
-    {
-        $result = $this->mongo->store->user->find(["username" => $user, "password" => $password]);
-        foreach ($result as $user => $details) {
-            return $details->role;
-        }
-    }
-
     /**
      * createID($id)
      * 
@@ -164,6 +146,12 @@ class ProductHelper extends Injectable
         return $result;
     }
 
+
+    /**
+     * function to send webhook response
+     *
+     * @return void
+     */
     public function sendWebhookResponse()
     {
         $client = new Client();
