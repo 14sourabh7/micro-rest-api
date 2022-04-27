@@ -238,25 +238,10 @@ class ProductHelper extends Injectable
      */
     public function setResponse($result)
     {
-        $response = [];
-
-        foreach ($result as $k => $v) {
-            $response[$k] = iterator_to_array($v);
-
-            if (isset($response[$k]["_id"]))
-                $response[$k]["_id"] = (array) $v->_id;
-
-            if (isset($v->additional)) {
-
-                $response[$k]['additional'] = iterator_to_array($v->additional);
-            }
-            if (isset($v->variation)) {
-                $response[$k]['variation'] = iterator_to_array($v->variation);
-                foreach ($v->variation as $key => $value) {
-                    $response[$k]['variation'][$key] = iterator_to_array($value);
-                }
-            }
-        }
+        $response = $result->toArray();
+        $response = json_encode($response);
+        $response = str_replace('$oid', 'oid', $response);
+        $response = json_decode($response, TRUE);
 
         if (count($response) < 1) {
             $response = array("info" => "no data found for the given conditions");

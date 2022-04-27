@@ -84,12 +84,12 @@
 
 
 
-    // try {
-    // Handle the request
-    $response = $application->handle(
-        $_SERVER["REQUEST_URI"]
-    );
-    $response->send();
-    // } catch (\Exception $e) {
-    // echo 'Exception: ', $e->getMessage();
-    // }
+    try {
+        // Handle the request
+        $response = $application->handle(
+            $_SERVER["REQUEST_URI"]
+        );
+        $response->send();
+    } catch (\Exception $e) {
+        echo 'Exception: ', $e->getMessage();
+    }
