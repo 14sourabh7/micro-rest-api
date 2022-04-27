@@ -193,16 +193,7 @@ class ProductHelper extends Injectable
     {
 
         $product =  $this->getSingle($data['id']);
-        foreach ($data as $key => $value) {
-            if (isset($product[0][$key])) {
-                if ($product[0][$key] == $value) {
-                } else {
-                    $updatedfields[$key] = $value;
-                }
-            } else {
-                $upatedfields[$key] = $value;
-            }
-        }
+        $updatedfields = array_diff($data, $product);
         $result =  $this->mongo->store->products->updateOne(
             [
 
